@@ -1,0 +1,185 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("PLANG HUB zeedzad Realplayfc (pc)", "DarkTheme")
+
+local Tab = Window:NewTab("How to use")
+local howto = Tab:NewSection("Q: Why you can't god/heal/kill")
+howto:NewLabel("A: Select the item to kill or heal and god")
+howto:NewLabel("Q: Why i not see item in dropdown")
+howto:NewLabel("A: You need to Refreshes the dropdown to Select")
+howto:NewLabel("Q: Why i can't heal/god/kill and i can Select item")
+howto:NewLabel("A: If you die Refreshes the dropdown to get new item")
+
+local Tab = Window:NewTab("Player")
+local Section = Tab:NewSection("Player event")
+
+Plr = {}
+item = {}
+
+local drop = Section:NewDropdown("Select Player!", "Click To Select", Plr, function(t)
+   Playerkill = t
+end)
+
+local drop2 = Section:NewDropdown("Select Item!", "Click To Select", item, function(t)
+   Selectitem = t
+end)
+
+Section:NewButton("Refreshes Dropdown Player", "Refreshes Dropdown", function()
+table.clear(Plr)
+    for i,v in pairs(game.Players:GetPlayers()) do
+        if v.Name ~= game.Players.LocalPlayer.Name then
+            table.insert(Plr,v.Name)
+            drop:Refresh(Plr)
+        end
+    end
+end)
+
+Section:NewButton("Refreshes Dropdown Item", "Refreshes Dropdown", function()
+table.clear(item)
+    for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v.Name ~= game.Players.LocalPlayer.Backpack.LocalScript then
+            table.insert(item,v.Name)
+            drop2:Refresh(item)
+        end
+    end
+end)
+
+Section:NewButton("Kill Select Player", "", function()
+pcall(function()
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[Playerkill].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[Playerkill].Character.Humanoid,100)
+end)
+end)
+
+Section:NewButton("God mode Select Player (Can't set back)", "", function()
+pcall(function()
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[Playerkill].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[Playerkill].Character.Humanoid,-math.huge)
+end)
+end)
+
+
+Section:NewToggle("Auto Heal Select Player", "", function(t)
+_G.loopheal = t
+while _G.loopheal do wait()
+pcall(function()
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[Playerkill].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[Playerkill].Character.Humanoid,math.huge)
+end)
+end
+end)
+
+Section:NewLabel("All Players")
+
+Section:NewButton("kill all whitelist", "", function(t)
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+if v.Name == game.Players.LocalPlayer.Name then
+elseif v.Name == game.Players[Playerkill].Name then
+else
+pcall(function()
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[v.Name].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[v.Name].Character.Humanoid,1000)
+end)
+end
+end
+end)
+
+Section:NewButton("kill all", "", function(t)
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+if v.Name == game.Players.LocalPlayer.Name then
+else
+pcall(function()
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[v.Name].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[v.Name].Character.Humanoid,1000)
+end)
+end
+end
+end)
+
+Section:NewButton("heal all", "", function(t)
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[v.Name].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[v.Name].Character.Humanoid,-100)
+end
+end)
+
+Section:NewToggle("Auto heal all", "", function(t)
+_G.healall = t
+while _G.healall do wait()
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[v.Name].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[v.Name].Character.Humanoid,-100)
+end
+end
+end)
+
+Section:NewToggle("Auto kill all", "", function(t)
+_G.killall = t
+while _G.killall do wait()
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[v.Name].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[v.Name].Character.Humanoid,1000)
+end
+end
+end)
+
+local Tab = Window:NewTab("LocalPlayer")
+local Section2 = Tab:NewSection("LocalPlayer event")
+
+Section2:NewButton("Set Hp = 100", "", function()
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,30,0)
+end)
+
+Section2:NewButton("Instant Respawn", "", function()
+game:GetService("ReplicatedStorage"):WaitForChild("RespawnRE"):FireServer()
+end)
+
+Section2:NewButton("God mode", "", function()
+pcall(function()
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[game.Players.LocalPlayer.Name].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[game.Players.LocalPlayer.Name].Character.Humanoid,-math.huge)
+end)
+end)
+
+Section2:NewToggle("Auto God mode", "", function(t)
+_G.God = t
+while _G.God do wait()
+pcall(function()
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[game.Players.LocalPlayer.Name].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[game.Players.LocalPlayer.Name].Character.Humanoid,-math.huge)
+end)
+end
+end)
+
+Section2:NewSlider("Speed Power", "Speed", 150, 16, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+end)
+
+Section2:NewSlider("Jump Power", "Jump", 250, 50, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+end)
+
+Section2:NewSlider("Add Health", "AddHealth", 99999, 100, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    healthmax = s
+end)
+
+Section2:NewButton("Add Health", "", function()
+pcall(function()
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.CreateOwner:FireServer(game:GetService("Players")[game.Players.LocalPlayer.Name].Character.Humanoid)
+game:GetService("Players").LocalPlayer.Backpack[Selectitem].Resource.Events.DamageEvent:FireServer(game:GetService("Players")[game.Players.LocalPlayer.Name].Character.Humanoid,-healthmax)
+end)
+end)
+
+local Tab = Window:NewTab("Settings")
+local Settings = Tab:NewSection("Settings")
+
+Settings:NewKeybind("close gui key", "close gui key", Enum.KeyCode.LeftControl, function()
+	Library:ToggleUI()
+end)
+
+Settings:NewButton("Rejoin", "", function()
+game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game:GetService("Players").LocalPlayer)
+end)
+
+Settings:NewButton("Serverhop", "", function()
+game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+end)
